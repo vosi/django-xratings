@@ -1,0 +1,9 @@
+include README.rst
+include CONTRIBUTORS
+include LICENSE
+recursive-include xratings/locale *
+recursive-include xratings/migrations *
+recursive-include xratings/static *
+recursive-include xratings/templates *
+recursive-include xratings/templatetags *
+recursive-include xratings/views *
