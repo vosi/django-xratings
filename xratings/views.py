@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, Http404
 
-from ratings.exceptions import (InvalidRating, CannotDeleteVote, AuthRequired,
+from xratings.exceptions import (InvalidRating, CannotDeleteVote, AuthRequired,
                                 IPLimitReached, CannotChangeVote)
 
 
