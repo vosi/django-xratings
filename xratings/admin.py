@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 
-from ratings.models import Vote
+from xratings.models import Vote
 
 
 class VoteAdmin(admin.ModelAdmin):
