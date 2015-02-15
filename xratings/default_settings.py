@@ -1,14 +1,13 @@
 # coding=utf-8
 from __future__ import unicode_literals
 
+from math import sqrt
 from datetime import timedelta
 
 from django.conf import settings
 
 # Used to limit the number of unique IPs that can vote on a single object+field.
 #   useful if you're getting rating spam by users registering multiple accounts
-from math import sqrt
-
 RATINGS_VOTES_PER_IP = getattr(settings, 'RATINGS_VOTES_PER_IP', 3)
 RATINGS_VOTES_PER_IP_TIMEDELTA = getattr(settings,
                                          'RATINGS_VOTES_PER_IP_TIMEDELTA',
