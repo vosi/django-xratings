@@ -33,7 +33,7 @@ __build__ = get_revision()
 def lazy_object(location):
     def inner(*args, **kwargs):
         parts = location.rsplit('.', 1)
-        warnings.warn('`djangoratings.%s` is deprecated. Please use `%s` instead.' % (parts[1], location), DeprecationWarning)
+        warnings.warn('`xratings.%s` is deprecated. Please use `%s` instead.' % (parts[1], location), DeprecationWarning)
         try:
             imp = __import__(parts[0], globals(), locals(), [parts[1]], -1)
         except:
