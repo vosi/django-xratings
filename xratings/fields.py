@@ -10,11 +10,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import IntegerField, FloatField
 from django_extensions.db.fields.json import JSONField
 
-from ratings.default_settings import RATINGS_VOTES_PER_IP
-from ratings.models import Vote
-from ratings.exceptions import (InvalidRating, CannotDeleteVote, AuthRequired,
+from xratings.default_settings import RATINGS_VOTES_PER_IP
+from xratings.models import Vote
+from xratings.exceptions import (InvalidRating, CannotDeleteVote, AuthRequired,
                                 IPLimitReached, CannotChangeVote)
-from ratings.default_settings import RATINGS_DEFAULT_FORMULA, \
+from xratings.default_settings import RATINGS_DEFAULT_FORMULA, \
     RATINGS_VOTES_PER_IP_TIMEDELTA
 
 if 'django.contrib.contenttypes' not in settings.INSTALLED_APPS:
