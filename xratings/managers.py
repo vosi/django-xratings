@@ -1,16 +1,21 @@
+# coding=utf-8
+from __future__ import unicode_literals
+
+import itertools
 from operator import itemgetter
+
 from django.db.models import Manager
 from django.db.models.query import QuerySet
-
 from django.contrib.contenttypes.models import ContentType
-import itertools
+
 
 class VoteQuerySet(QuerySet):
     def delete(self, *args, **kwargs):
-        """Handles updating the related `votes` and `score` fields attached
-        to the model."""
-        qs = self.values_list('score', 'content_type', 'object_id')\
-                        .order_by('content_type', 'object_id')
+        # Handles updating the related `votes` and `score` fields attached to
+        # the model.
+        qs = self.distinct()\
+            .values_list('score', 'content_type', 'object_id')\
+            .order_by('content_type', 'object_id')
 
         qs = list(qs)
         for ct_type, votes_a in itertools.groupby(qs, itemgetter(1)):
@@ -25,6 +30,7 @@ class VoteQuerySet(QuerySet):
         retval = super(VoteQuerySet, self).delete(*args, **kwargs)
         return retval
 
+
 class VoteManager(Manager):
     def get_query_set(self):
         return VoteQuerySet(self.model)
@@ -33,10 +39,10 @@ class VoteManager(Manager):
         objects = list(objects)
         if len(objects) > 0:
             ctype = ContentType.objects.get_for_model(objects[0])
-            votes = list(self.filter(content_type__pk=ctype.id,
-                                     object_id__in=[obj._get_pk_val() \
-                                                    for obj in objects],
-                                     user__pk=user.id))
+            votes = self.filter(content_type__pk=ctype.id,
+                                object_id__in=[obj._get_pk_val()
+                                               for obj in objects],
+                                user__pk=user.id)
             vote_dict = dict([(vote.object_id, vote) for vote in votes])
         else:
             vote_dict = {}
