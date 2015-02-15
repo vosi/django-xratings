@@ -1,49 +1,43 @@
-from datetime import datetime
+# coding=utf-8
+from __future__ import unicode_literals
 
 from django.db import models
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from default_settings import RATINGS_USER_MODEL
+from django.utils.encoding import python_2_unicode_compatible
 
-try:
-    from django.utils.timezone import now
-except ImportError:
-    now = datetime.now
-
-from managers import VoteManager
+from ratings.managers import VoteManager
 
 
+@python_2_unicode_compatible
 class Vote(models.Model):
-    content_type = models.ForeignKey(ContentType, related_name="votes")
-    object_id = models.PositiveIntegerField()
     key = models.CharField(max_length=32)
     score = models.IntegerField()
-    user = models.ForeignKey(RATINGS_USER_MODEL, blank=True,
-                             null=True, related_name="votes")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True,
+                             null=True, related_name='votes')
     ip_address = models.GenericIPAddressField(unpack_ipv4=True)
     cookie = models.CharField(max_length=32, blank=True, null=True)
-    date_added = models.DateTimeField(default=now, editable=False)
-    date_changed = models.DateTimeField(default=now, editable=False)
+    date_added = models.DateTimeField(auto_now_add=True, editable=False)
+    date_changed = models.DateTimeField(auto_now=True, editable=False)
+
+    content_type = models.ForeignKey(ContentType, related_name='votes')
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey()
 
     objects = VoteManager()
 
-    content_object = generic.GenericForeignKey()
-
     class Meta:
-        unique_together = (('content_type', 'object_id', 'key', 'user',
-                            'ip_address', 'cookie'))
+        unique_together = (
+            ('content_type', 'object_id', 'key', 'user',
+             'ip_address', 'cookie'))
 
-    def __unicode__(self):
-        return u"%s voted %s on %s" % (self.user_display, self.score,
-                                       self.content_object)
+    def __str__(self):
+        return '%s voted %s on %s' % (
+            self.user_display, self.score, self.content_object)
 
-    def save(self, *args, **kwargs):
-        self.date_changed = now()
-        super(Vote, self).save(*args, **kwargs)
-
+    @property
     def user_display(self):
         if self.user:
-            return "%s (%s)" % (self.user.username, self.ip_address)
+            return '%s (%s)' % (self.user.username, self.ip_address)
         return self.ip_address
-
-    user_display = property(user_display)
